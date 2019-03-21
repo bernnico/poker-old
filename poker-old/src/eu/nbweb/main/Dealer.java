@@ -14,6 +14,9 @@ public class Dealer {
 	
 	private static final long checkAssAnd = 	0x7_0000_0000_0000l;
 	private static final long checkAssOr = 		0x1_0000_0000_0000l;
+	
+	private static final int SUITS = 	4;
+	private static final int IMAGES = 		13;	
 
 	// index: 0 -> h, 1 -> k, 2 -> s, 3 -> c
 	// 0b00000000_00000001_00010001_00010001_00010001_00010001_00010001_00010001
@@ -39,11 +42,11 @@ public class Dealer {
 
 	public void setPlayers(Player... players) {
 		this.players = players.length;
-		this.cardsInGame = new long[this.players + 1][4];
+		this.cardsInGame = new long[this.players + 1][SUITS];
 		this.playerCardIndex = new int[this.players][2];
 
 		for (int i = 0; i < players.length; i++) {
-			for (int j = 0; j < 4; j++)
+			for (int j = 0; j < SUITS; j++)
 				cardsInGame[i + 1] = players[i].getHandAsMatrix();
 
 			this.playerCardIndex[i][0] = players[i].getCardsInGameIndex()[0];
@@ -54,7 +57,7 @@ public class Dealer {
 	private void init() {
 		this.checkCardsInGame = new boolean[52];
 		this.cardsInGame[0] = new long[4];
-		this.playerBoard = new long[players][4];
+		this.playerBoard = new long[players][SUITS];
 		this.playersCombos = new long[players];
 
 		this.flushHand = new long[players];
@@ -75,7 +78,7 @@ public class Dealer {
 		int tiel = 0;
 		int wins = 0;
 
-		while (i < 15000000) {
+		while (i < 2600000) {
 			init();
 			getBoard();
 			checkFlush();
@@ -100,36 +103,24 @@ public class Dealer {
 		getRandomCard();
 
 		for (int i = 0; i < players; i++) {
-			for (int j = 0; j < 4; j++) {
+			for (int j = 0; j < SUITS; j++) {
 				playerBoard[i][j] |= cardsInGame[0][j] | cardsInGame[i + 1][j];
 				playersCombos[i] += cardsInGame[0][j] | cardsInGame[i + 1][j];
 			}
 		}
 	}
-	
-	private void getAllBoards(int[] index4, int[] index13) {
-		// long[4] as 4x13 Matrix
-		long h13, k13, s13, c13;
-		
-		h13 = 0b011111;
-		
-		int a = 0, b = 1, c = 2, d = 3, e = 4; 
-		
-	}
-	
 
 	private void getRandomCard() {
-		int image = (random.nextInt(71391) ^ random.nextInt(73197)) % 13;
-		int suit = (random.nextInt(4) ^ random.nextInt(5137) ^ random.nextInt(13017)) % 4;
-
-
+		int image = (random.nextInt(64) ^ random.nextInt(64)) % IMAGES;
+		int suit = (random.nextInt(16) ^ random.nextInt(16)) % SUITS;
 		
-		while (checkCardsInGame[image + suit * 13]) {
-			image = (random.nextInt(1911153) ^ random.nextInt(917013)) % 13;
-			suit = (random.nextInt(76518) ^ random.nextInt(130757) ^ random.nextInt(13057)) % 4;
+		while (checkCardsInGame[image + suit * IMAGES]) {
+			image = (random.nextInt(64) ^ random.nextInt(64)) % IMAGES;
+			suit = (random.nextInt(16) ^ random.nextInt(16)) % SUITS;
 		}
+		
 		cardsInGame[0][suit] |= 0x01l << (image << 2);
-		checkCardsInGame[image + suit * 13] = true;	
+		checkCardsInGame[image + suit * IMAGES] = true;	
 	}
 
 	private void checkFlush() {

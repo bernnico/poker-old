@@ -18,25 +18,29 @@ public class Main {
 		//p[1] = new Player();
 		//p[1].setHand(card3, card4);
 		p[1] = new Player();
-		p[1].setHand(card5, card6);
-//
-//		Interpreter inter = new Interpreter();
-//		System.out.println(inter.getCardAsString(inter.getCardAsField("TcKk")));
-		
-		
-		
+		p[1].setHand(card5, card6);	
 		Dealer d = new Dealer();
 		d.setPlayers(p);
-		long timeStart = System.currentTimeMillis();
-		//System.out.println(p[0].getCardsInGameIndex()[0] + " " + p[0].getCardsInGameIndex()[1]);
-		//System.out.println(d.getEquity().length);
+//		long timeStart = System.currentTimeMillis();
+
 		double[] eq =d.getEquity();
 		double sum = 0;
 		for (int i = eq.length - 1; i >= 0; i--) {
-			System.out.println(i + " " + 100*eq[i]);
 			sum += eq[i];
 		}
-		System.out.println(sum - eq[0]);
+		
+		System.out.println("High\t" + 100*eq[9]);
+		System.out.println("Pair\t" + 100*eq[8]);
+		System.out.println("Two\t" + 100*eq[7]);
+		System.out.println("Three\t" + 100*eq[6]);
+		System.out.println("Str\t" + 100*eq[5]);
+		System.out.println("Flush\t" + 100*eq[4]);
+		System.out.println("Full\t" + 100*eq[3]);
+		System.out.println("Four\t" + 100*eq[2]);
+		System.out.println("StrF\t" + 100*eq[1]);
+		
+		System.out.println("\nwin\t" + 100*eq[0]);
+		System.out.println("sum\t" + (sum - eq[0]));
 		
 		//System.out.println(System.currentTimeMillis() - timeStart);
 		
