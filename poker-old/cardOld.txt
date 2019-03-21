@@ -1,0 +1,142 @@
+package eu.nbweb.main;
+
+public class Card implements Comparable<Card>{
+	
+	// private short _2 = 0b1;
+	// private short _3 = 0b10;
+	// private short _4 = 0b100;
+	// private short _5 = 0b1000;
+	// private short _6 = 0b10000;
+	// private short _7 = 0b100000;
+	// private short _8 = 0b1000000;
+	// private short _9 = 0b10000000;
+	private short _T = 0b100000000;
+	private short _J = 0b1000000000;
+	private short _D = 0b10000000000;
+	private short _K = 0b100000000000;
+	private short _A = 0b1000000000000;
+	// private char h = 'h';
+	// private char k = 'k';
+	// private char s = 's';
+	// private char c = 'c';
+	// private char T = 'T';
+	// private char J = 'J';
+	// private char D = 'D';
+	// private char K = 'K';
+	// private char A = 'A';
+	
+	private short[] cardAsField;
+	private char[] cardAsChar;
+
+	public Card() {
+		this.cardAsField = new short[4];
+		this.cardAsChar = new char[2];
+	}
+	
+	public Card(short[] hand) {
+		this.cardAsField = hand;
+		this.cardAsChar = new char[2];
+		FieldToString(hand);
+	}
+	
+	private void FieldToString(short[] hand) {
+		for (int i = 0; i < 4; i++) {
+			if (hand[i] != 0) {
+				cardAsChar[1] = i == 0 ? 'h' : (
+								i == 1 ? 'k' : (
+								i == 2 ? 's' : 'c'));
+			
+				short ref = 1;
+				for (int j = 0; j < 13; j++) {
+					if (hand[i] == ref) {
+						if (ref < 1024)
+							cardAsChar[0] = (char) (j + 2 + 48);
+						else if (ref == 10)
+							cardAsChar[0] = 'T';
+						else if (ref == 11)
+							cardAsChar[0] = 'J';
+						else if (ref == 12)
+							cardAsChar[0] = 'D';
+						else if (ref == 13)
+							cardAsChar[0] = 'K';
+						else if (ref == 14)
+							cardAsChar[0] = 'A';
+						else 
+							throw new IllegalArgumentException("!!!   Card as field: Wrong format   !!!");
+					}
+					ref <<= 1;
+				}
+			}
+		}
+		if(cardAsChar[0] == 0 ||cardAsChar[1] == 0) 
+			throw new IllegalArgumentException("!!!   Card as field: Wrong format   !!!");
+	}
+
+	public Card(String hand) {
+		if (hand.length() != 2)
+			throw new IllegalArgumentException("!!!   Card as string: Wrong format   !!!");
+		
+		
+		this.cardAsField = new short[4];
+		stringToField(hand);
+		this.cardAsChar = hand.toCharArray();
+	}
+
+	private void stringToField(String hand) {
+		char[] handAsChar = hand.toCharArray();
+		
+		if (handAsChar[1] == 'h' || handAsChar[1] == 'H')
+			cardAsField[0] = getCardImage(handAsChar[0]);
+		else if (handAsChar[1] == 'k' || handAsChar[1] == 'K')
+			cardAsField[1] = getCardImage(handAsChar[0]);
+		else if (handAsChar[1] == 's' || handAsChar[1] == 'S')
+			cardAsField[2] = getCardImage(handAsChar[0]);
+		else if (handAsChar[1] == 'c' || handAsChar[1] == 'C')
+			cardAsField[3] = getCardImage(handAsChar[0]);
+		else 
+			throw new IllegalArgumentException("!!!   Card as string: Wrong format   !!!");
+	}
+
+	private short getCardImage(char imadge) {
+		if (imadge > 0x31 && imadge < 0x3a)
+			return (short) (1 << (Integer.valueOf(Character.toString(imadge)) - 2));
+		
+		if(imadge == 'T' || imadge == 't')
+			return _T;
+		if(imadge == 'J' || imadge == 'j')
+			return _J;
+		if(imadge == 'D' || imadge == 'd')
+			return _D;
+		if(imadge == 'K' || imadge == 'k')
+			return _K;
+		if(imadge == 'A' || imadge == 'a')
+			return _A;
+		
+		return 0;
+	}
+
+
+	public short[] getCardAsField() {
+		return cardAsField;
+	}
+
+	public char[] getCardAsChar() {
+		return cardAsChar;
+	}
+
+	@Override
+	public int compareTo(Card arg0) {
+		short[] sum = new short[2];
+		for (int i = 0; i < 4; i++) {
+			sum[0] |= cardAsField[i];
+			sum[1] |= arg0.getCardAsField()[i];
+		}
+		
+		if (sum[0] > sum[1])
+			return 1;
+		if (sum[0] < sum[1])
+			return -1;
+		
+		return 0;
+	}
+}

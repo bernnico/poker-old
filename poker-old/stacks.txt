@@ -1,0 +1,40 @@
+// '2','3','4','5','6','7','8','9','t','j','d','k','a'
+	
+	private final String[][] images = {
+			{"2h","3h","4h","5h","6h","7h","8h","9h","th","jh","dh","kh","ah"},
+			{"2k","3k","4k","5k","6k","7k","8k","9k","tk","jk","dk","kk","ak"},
+			{"2s","3s","4s","5s","6s","7s","8s","9s","ts","js","ds","ks","as"},
+			{"2c","3c","4c","5c","6c","7c","8c","9c","tc","jc","dc","kc","ac"}
+	};
+	
+	private final char[][] imagesC = {
+			{'2','h'},{'3','h'},{'4','h'},{'5','h'},{'6','h'},{'7','h'},{'8','h'},{'9','h'},{'T','h'},{'J','h'},{'D','h'},{'K','h'},{'A','h'},
+			{'2','k'},{'3','k'},{'4','k'},{'5','k'},{'6','k'},{'7','k'},{'8','k'},{'9','k'},{'T','k'},{'J','k'},{'D','k'},{'K','k'},{'A','k'},
+			{'2','s'},{'3','s'},{'4','s'},{'5','s'},{'6','s'},{'7','s'},{'8','s'},{'9','s'},{'T','s'},{'J','s'},{'D','s'},{'K','s'},{'A','s'},
+			{'2','c'},{'3','c'},{'4','c'},{'5','c'},{'6','c'},{'7','c'},{'8','c'},{'9','c'},{'T','c'},{'J','c'},{'D','c'},{'K','c'},{'A','c'}};
+	
+staerke der hand:
+	for (int i = 0; i < playersCards.length; i++) {
+			for (int j = 0; j < 13; j++) {
+				if ((playersCards[i] | (cards1 >> (j << 2))) == playersCards[i]) {
+					bestHands[i] ^= (13 - j) << ((highCard - 1) << 2);
+									// 0xd0000; // high card
+					highCard--;
+					
+					if ((playersCards[i] | (cards2 >> (j << 2))) == playersCards[i]) {
+						bestHands[i] ^= ((13 - j) << 12) ^ ((13 - j) << 20);
+										// 0xd000			0xd_00000; // a pair
+						bestHands[i] ^= (13 - j) << ((highCard - 1) << 2);
+						
+						highCard++;
+						
+						if ((playersCards[i] | (cards3 >> (j << 2))) == playersCards[i]) {
+							bestHands[i] ^= ((13 - j) << 8) ^ ((13 - j) << 20) ^ ((13 - j) << 28); 
+											//0xd00				0xd_00000		0xd_0_0_00000; // three
+						
+							if ((playersCards[i] | (cards4 >> (j << 2))) == playersCards[i]) {
+								bestHands[i] = ((13 - j) << 48); 
+												// 0xd_0_0_0_0_0_0_00000L // four wins			
+								break;
+				}}}}
+		}}
